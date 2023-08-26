@@ -139,7 +139,7 @@ public class SwoopTest {
 
         driver.findElement(By.id("pFirstName")).sendKeys("liku");
         driver.findElement(By.id("pLastName")).sendKeys("khokhi");
-        driver.findElement(By.id("pEmail")).sendKeys("likusukvarslobio.com");
+        driver.findElement(By.id("pEmail")).sendKeys("likusukvarslobio@.com");
         driver.findElement(By.id("pPhone")).sendKeys("555-55-55-55");
 
         driver.findElement(By.id("pDateBirth")).sendKeys("10", "8", "2002");
