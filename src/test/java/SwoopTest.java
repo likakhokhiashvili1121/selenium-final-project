@@ -4,26 +4,39 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SwoopTest {
     WebDriver driver;
     WebDriverWait wait;
 
     @BeforeClass
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+    @Parameters("browser")
+    public void startTest(@Optional("chrome") String browser) throws Exception{
+        if (browser.equalsIgnoreCase("chrome")){
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+        } else if (browser.equalsIgnoreCase("Edge")){
+            WebDriverManager.edgedriver().setup();
+            driver = new EdgeDriver();
+        } else {
+            throw new Exception("Browser is not correct");
+        }
+
+
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, 10); // Initialize WebDriverWait
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        String url = "https://www.swoop.ge/";
+        driver.get(url);
     }
 
     @Test
@@ -42,6 +55,28 @@ public class SwoopTest {
         Actions actions = new Actions(driver);
         actions.moveToElement(firstMovie).perform();
         driver.findElement(By.xpath("(//p[contains(text(),'ყიდვა')])")).click();
+
+/*
+        // Find the parent element containing movie list
+        WebElement movies = driver.findElement(By.xpath("//*[@id=\"body\"]/div[9]"));
+        List<WebElement> moviesList = movies.findElements(By.xpath("//*[@id=\"body\"]/div[9]/div[1]"));
+        // Loop through each movie to find the desired one
+        for (WebElement movie : moviesList) {
+            String movieTitle = movie.findElement(By.tagName("h2")).getText();
+            if (movieTitle.contains("კავეა ისთ ფოინთი")) {
+                // Scroll to the movie for better interaction (if needed)
+                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", movie);
+
+                // click 'ყიდვა' button
+                Actions actions = new Actions(driver);
+                actions.moveToElement(movie).perform();
+                movie.findElement(By.xpath(".//p[contains(text(),'ყიდვა')]")).click();
+
+                break;
+            }
+        }
+
+ */
 
         // Scroll vertically (if necessary), and horizontally and choose ‘კავეა ისთ ფოინთი’
         //WebElement caveaIslandPoint = driver.findElement(By.id("ui-id-6"));
